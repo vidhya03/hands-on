@@ -1,5 +1,11 @@
 package com.labkit.vidhya03;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+
 public class QueensAttack {
 
 
@@ -164,29 +170,73 @@ public class QueensAttack {
 
         ///////////////
         // First input
-        n = 5;
-        k = 3;
-        r_q = 4;
-        c_q = 3;
-//        obstacles = new int[k][2];
+//        n = 5;
+//        k = 3;
+//        r_q = 4;
+//        c_q = 3;
+//
+//
+//        int[][] obstacles = {{5, 5}, {4, 2}, {2, 3}};
+//        int firstTest = queensAttack(n, k, r_q, c_q, obstacles);
+//
+//        assert firstTest == 10 : "Expecting 10 but found " + firstTest;
+//
+//
+//        n = 100000 ;
+//        k =0 ;
+//        r_q = 4187;
+//        c_q = 5068;
+//
+//        int testcase3 = queensAttack(n, k, r_q, c_q, obstacles);
+//
+//        assert testcase3 == 308369 : "Expecting 308369 but found " + testcase3;
+//
+//
+        n = 100000;
+        k = 100000;
+        r_q = 4697;
+        c_q = 4728;
+        int[][] obstacles2 = new int[k][2];
 
-        int[][] obstacles = {{5, 5}, {4, 2}, {2, 3}};
-        int firstTest = queensAttack(n, k, r_q, c_q, obstacles);
+        try {
+            List<String> allLines = Files.readAllLines(Paths.get("X:\\opensource12\\vidhya-handson\\src\\com\\labkit\\vidhya03\\QueensAttack-array-input.txt"), Charset.defaultCharset());
+            int i= 0;
+            for (String line : allLines) {
+                String[] obstaclesRowItems = line.split(" ");
+                for (int j = 0; j < 2; j++) {
+                    int obstaclesItem = Integer.parseInt(obstaclesRowItems[j]);
+                    obstacles2[i][j] = obstaclesItem;
+                }
+                i++;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        System.out.println("obstacles2 = " + obstacles2);
+//        printObstaclesGrid(obstacles2, k);
 
-        assert firstTest == 10 : "Expecting 10 but found " + firstTest;
+//
+        long start = System.currentTimeMillis();
+        int testcase03 = queensAttack(n, k, r_q, c_q, obstacles2);
 
-
-        n = 100000 ;
-        k =0 ;
-        r_q = 4187;
-        c_q = 5068;
-
-        int testcase3 = queensAttack(n, k, r_q, c_q, obstacles);
-
-        assert testcase3 == 308369 : "Expecting 308369 but found " + testcase3;
+        assert testcase03 == 30544 : "Expecting 30544 but found "+testcase03;
+        long end = System.currentTimeMillis();
+        // Took 2312 - 2683 milliseconds
+        System.out.println("Took  = " + (end - start));
 
 
 
+
+    }
+
+    private static void printObstaclesGrid(int[][] obstacles2,int k) {
+        for (int i = 0; i < k; i++) {
+
+
+            for (int j = 0; j < 2; j++) {
+                System.out.println("obstacles2 = " + obstacles2[i][j]);
+            }
+        }
     }
 
 }
