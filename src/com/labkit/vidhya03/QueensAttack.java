@@ -5,6 +5,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.LinkedHashMap;
 
 public class QueensAttack {
 
@@ -24,8 +25,10 @@ public class QueensAttack {
             return count;
         }
 
+        LinkedHashMap<String, String> linkedHashMap = convertObstacles(obstacles, n);
 
-       // Fill the queen
+
+        // Fill the queen
 
         r_q = (n-1) - (r_q -1);
         c_q = c_q -1;
@@ -33,15 +36,15 @@ public class QueensAttack {
 
 //        printGrid(grid,n);
 
-        count += leftCount(obstacles, n,r_q ,c_q);
-        count += rightCount(obstacles, n, r_q, c_q);
-        count += upCount(obstacles, n, r_q, c_q);
-        count += downCount(obstacles, n, r_q, c_q);
+        count += leftCount(linkedHashMap, n,r_q ,c_q);
+        count += rightCount(linkedHashMap, n, r_q, c_q);
+        count += upCount(linkedHashMap, n, r_q, c_q);
+        count += downCount(linkedHashMap, n, r_q, c_q);
 
-        count += leftUpCount(obstacles, n,r_q ,c_q);
-        count += leftDownCount(obstacles, n,r_q ,c_q);
-        count += rightUpCount(obstacles, n,r_q ,c_q);
-        count += rightDownCount(obstacles, n,r_q ,c_q);
+        count += leftUpCount(linkedHashMap, n,r_q ,c_q);
+        count += leftDownCount(linkedHashMap, n,r_q ,c_q);
+        count += rightUpCount(linkedHashMap, n,r_q ,c_q);
+        count += rightDownCount(linkedHashMap, n,r_q ,c_q);
 
 
 
@@ -49,9 +52,27 @@ public class QueensAttack {
         return count;
     }
 
-    private static int rightDownCount(int[][] obstacles, int n, int r_q, int c_q) {
+    private static String concatRowCol(int row, int col){
+        return "" + row + "" + col;
+    }
+    private static LinkedHashMap<String, String> convertObstacles(int[][] obstacles,int n) {
+        LinkedHashMap<String, String> linkedHashMap = new LinkedHashMap<>();
+        for (int[] obstacle : obstacles) {
+            int row_x_i = obstacle[0];
+            int col_y_j = obstacle[1];
+            // Since the grid is computer defined array ,
+            // Hence transform from bottom up to top down
+            row_x_i = (n-1) - (row_x_i -1);
+            col_y_j = col_y_j -1;
+
+            linkedHashMap.put(concatRowCol(row_x_i , col_y_j),concatRowCol(row_x_i , col_y_j) );
+        }
+        return linkedHashMap;
+    }
+
+    private static int rightDownCount(LinkedHashMap<String, String> linkedHashMap, int n, int r_q, int c_q) {
         int count =0 ;
-        while(c_q+1 < n && r_q+1 < n && !isObstacles(obstacles, n, r_q+1, c_q+1)) {
+        while(c_q+1 < n && r_q+1 < n && !linkedHashMap.containsValue(concatRowCol(r_q+1, c_q+1))) {
             count++;
             c_q++;
             r_q++;
@@ -59,9 +80,9 @@ public class QueensAttack {
         return count;
     }
 
-    private static int leftDownCount(int[][] obstacles, int n, int r_q, int c_q) {
+    private static int leftDownCount(LinkedHashMap<String, String> linkedHashMap, int n, int r_q, int c_q) {
         int count =0 ;
-        while(c_q-1 >=0 && r_q+1 < n && !isObstacles(obstacles, n, r_q+1, c_q-1)) {
+        while(c_q-1 >=0 && r_q+1 < n && !linkedHashMap.containsValue(concatRowCol(r_q+1, c_q-1))) {
             count++;
             c_q--;
             r_q++;
@@ -69,18 +90,18 @@ public class QueensAttack {
         return count;
     }
 
-    private static int rightCount(int[][] obstacles, int n, int r_q, int c_q) {
+    private static int rightCount(LinkedHashMap<String, String> linkedHashMap, int n, int r_q, int c_q) {
         int count =0 ;
-        while(c_q+1 < n && !isObstacles(obstacles, n, r_q, c_q+1)) {
+        while(c_q+1 < n && !linkedHashMap.containsValue(concatRowCol(r_q, c_q+1))) {
             count++;
             c_q++;
         }
         return count;
     }
 
-    private static int rightUpCount(int[][] obstacles, int n, int r_q, int c_q) {
+    private static int rightUpCount(LinkedHashMap<String, String> linkedHashMap, int n, int r_q, int c_q) {
         int count =0 ;
-        while(c_q+1 < n && r_q-1 >=0 && !isObstacles(obstacles, n, r_q-1, c_q+1)) {
+        while(c_q+1 < n && r_q-1 >=0 && !linkedHashMap.containsValue(concatRowCol(r_q-1, c_q+1))) {
             count++;
             c_q++;
             r_q--;
@@ -88,37 +109,37 @@ public class QueensAttack {
         return count;
     }
 
-    private static int downCount(int[][] obstacles, int n, int r_q, int c_q) {
+    private static int downCount(LinkedHashMap<String, String> linkedHashMap, int n, int r_q, int c_q) {
         int count =0 ;
-        while(r_q+1 < n && !isObstacles(obstacles, n, r_q+1, c_q)) {
+        while(r_q+1 < n && !linkedHashMap.containsValue(concatRowCol(r_q+1, c_q))) {
             count++;
             r_q++;
         }
         return count;
     }
 
-    private static int upCount(int[][] obstacles, int n, int r_q, int c_q) {
+    private static int upCount(LinkedHashMap<String, String> linkedHashMap, int n, int r_q, int c_q) {
         int count =0 ;
-        while(r_q-1 >= 0 && !isObstacles(obstacles, n, r_q-1, c_q)) {
+        while(r_q-1 >= 0 && !linkedHashMap.containsValue(concatRowCol(r_q-1, c_q))) {
             count++;
             r_q--;
         }
         return count;
     }
 
-    private static int leftCount(int[][] obstacles, int n, int r_q, int c_q) {
+    private static int leftCount(LinkedHashMap<String, String> linkedHashMap, int n, int r_q, int c_q) {
         int count =0 ;
-        while(c_q-1 >=0 &&  !isObstacles(obstacles, n, r_q, c_q-1)) {
+        while(c_q-1 >=0 &&  !linkedHashMap.containsValue(concatRowCol(r_q, c_q-1))) {
             count++;
             c_q--;
         }
         return count;
     }
 
-    private static int leftUpCount(int[][] obstacles, int n, int r_q, int c_q) {
+    private static int leftUpCount(LinkedHashMap<String, String> linkedHashMap, int n, int r_q, int c_q) {
 
         int count =0 ;
-        while(c_q-1 >=0 && r_q-1 >=0 && !isObstacles(obstacles, n, r_q-1, c_q-1)) {
+        while(c_q-1 >=0 && r_q-1 >=0 && !linkedHashMap.containsValue(concatRowCol(r_q-1, c_q-1))) {
             count++;
             c_q--;
             r_q--;
